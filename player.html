@@ -3,30 +3,35 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Shera Radio</title>
+    <title>Shera HUD Radio</title>
     <style>
       body { margin:0; background:#000; color:#fff; font-family:sans-serif; }
       .wrap { padding:10px; }
+      .small { font-size:12px; opacity:.85; margin-top:8px; }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <div id="status">Loading…</div>
+      <div id="status">Waiting for stream…</div>
       <audio id="a" controls autoplay playsinline style="width:100%"></audio>
+      <div class="small">
+        Note: HTTPS streams work best. Some HTTP streams are blocked from HTTPS pages.
+      </div>
     </div>
 
     <script>
       const params = new URLSearchParams(location.search);
-      const stream = params.get("u");
+      const stream = params.get("u") || "";
       const status = document.getElementById("status");
       const audio  = document.getElementById("a");
 
       if (!stream) {
-        status.textContent = "No stream URL provided.";
+        status.textContent = "No stream URL provided. (Use ?u=ENCODED_URL)";
       } else {
-        status.textContent = "Stream loaded.";
+        status.textContent = "Stream: " + stream;
         audio.src = stream;
 
+        // Try to start playback (some engines require a click)
         const tryPlay = () => {
           const p = audio.play();
           if (p && p.catch) p.catch(() => {});
