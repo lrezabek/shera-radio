@@ -1,12 +1,40 @@
 <!doctype html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Shera Radio</title>
+    <style>
+      body { margin:0; background:#000; color:#fff; font-family:sans-serif; }
+      .wrap { padding:10px; }
+    </style>
   </head>
-  <body style="margin:0;background:#000">
-    <audio autoplay>
-      <source src="http://themaddj.lightmanstreams.com:9760/">
-    </audio>
+  <body>
+    <div class="wrap">
+      <div id="status">Loading…</div>
+      <audio id="a" controls autoplay playsinline style="width:100%"></audio>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(location.search);
+      const stream = params.get("u");
+      const status = document.getElementById("status");
+      const audio  = document.getElementById("a");
+
+      if (!stream) {
+        status.textContent = "No stream URL provided.";
+      } else {
+        status.textContent = "Stream loaded.";
+        audio.src = stream;
+
+        const tryPlay = () => {
+          const p = audio.play();
+          if (p && p.catch) p.catch(() => {});
+        };
+
+        tryPlay();
+        document.body.addEventListener("click", tryPlay, { once:true });
+      }
+    </script>
   </body>
 </html>
